@@ -1,79 +1,75 @@
 
-const validateDnaMutant =  async (dna = []) => {
-    console.log('datos de prueba xd', dna);
-    return await isMutant(dna);
+const validateDnaMutant =  async (dna) => {
+    if (await validateDnaSecuence(dna)) {
+        return await isMutant(dna);
+    } 
+ }
+
+ const validateDnaSecuence = async (dna) => { 
+   
+    const dnaSecuenceLenght = 6;
+    const splittedDna = dna.toString().split(",");
+    // 'DNA_INCORRECT_SECUENCE', 'La longitud de secuencia de ADN no es correcta.'
+    // 'DNA_INCORRECT_BASE', 'La secuencia dada no corresponde a la Base Nitrogenada: "A","T","C","G".'
+    splittedDna.forEach(secuence => {
+        if (secuence.length !== dnaSecuenceLenght && splittedDna.length !== dnaSecuenceLenght) {
+            throw 'DNA_INCORRECT_SECUENCE';
+        }
+        const pattern = /[^ATCG]/g;
+        if (secuence.match(pattern) !== null  && secuence.match(pattern).length > 0) {
+            throw 'DNA_INCORRECT_BASE';
+        }
+    });
+
+    return true;
  }
 
 const isMutant = async (dna = []) => {
-    let diagonal = [undefined, 0];
-    let vertical = [undefined, 0];
-    let horizontal = [undefined, 0];
-    let total = 0;
 
-    //Ciclo para recorrer ADN
-    for (let dnaIndex = 0; dnaIndex < dna.length; dnaIndex++) {
-        let gen = dna[dnaIndex];
+    console.log(dna);
+    const patternA = /[A]{4}/g;
+    const patternT = /[T]{4}/g;
+    const patternC = /[C]{4}/g;
+    const patternG = /[G]{4}/g;
+   
+    const dnaSecuenceLenght = 6;
+    const splittedDna = dna.toString().split(",");
+    let isMutantState = false;
+    let idx = 0;
+    
+    splittedDna.forEach(secuence => {
+       
+        let idj = 0;
+        let verticalSecuence = "";
+        let diagonalSecuence = "";
 
-        //Ciclo para recorrer letras del ADN
-        for (let charIndex = 0; charIndex < dna.length; charIndex++) {
-            let horizontalSecuence = gen[charIndex];
+        for (let index = 0; index < dnaSecuenceLenght; index++) {
+            const verticalElement = splittedDna[index].toString()[idx];
+            verticalSecuence = verticalSecuence + verticalElement;
 
-            if (horizontal[0] != horizontalSecuence) {
-                horizontal[0] = horizontalSecuence;
-                horizontal[1] = 1;
-            }
-            else {
-                horizontal[0] = horizontalSecuence;
-                horizontal[1] ++;
-            }
-
-            if (horizontal[1] == 4) {
-                if(++total > 1){
-                    return true;
-                }
-            }
-
-            //vertical
-            let verticalSecuence = dna[charIndex][dnaIndex];
-            if (vertical[0] != verticalSecuence) {
-                vertical[0] = verticalSecuence;
-                vertical[1] = 1;
-            }
-            else {
-                vertical[0] = verticalSecuence;
-                vertical[1]++;
-            }
-
-            if (vertical[1] == 4) {
-                if(++total > 1){
-                    return true;
-                }
-            }
+            const diagonalElement = splittedDna[index].toString()[idj];
+            diagonalSecuence = diagonalSecuence + diagonalElement;
+            idj++;
         }
 
-        //diagonal
-        let diagonalSecuence = dna[dnaIndex][dnaIndex];
-
-        if (diagonal[0] != diagonalSecuence) {
-            diagonal[0] = diagonalSecuence;
-            diagonal[1] = 1;
+         // Evaluate Horizontal Matrix
+         if (secuence.match(patternA) || secuence.match(patternT) || secuence.match(patternC) || secuence.match(patternG)) {
+            isMutantState = true;
         }
-        else {
-            diagonal[0] = diagonalSecuence;
-            diagonal[1]++;
+        // Evaluate Vertical Matrix
+        if (verticalSecuence.match(patternA) || verticalSecuence.match(patternT) || verticalSecuence.match(patternC) || verticalSecuence.match(patternG)) {
+            isMutantState = true;
         }
 
-        if (diagonal[1] == 4) {
-            if(++total > 1){
-                return true;
-            }
+         // Evaluate Diagonal Matrix
+        if (diagonalSecuence.match(patternA) || diagonalSecuence.match(patternT) || diagonalSecuence.match(patternC) || diagonalSecuence.match(patternG)) {
+            isMutantState = true;
         }
+       
+        idx++;
+     });
 
-        horizontal = [undefined, 0];
-        vertical = [undefined, 0];
-    }
-
-    return false;
+    return isMutantState;
 };
 
 exports.validateDnaMutant = validateDnaMutant;
