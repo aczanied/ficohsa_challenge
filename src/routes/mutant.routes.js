@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const mutantController = require('./../controllers/mutant.controller');
+const mutantService = require('./../services/mutant.service');
 
 // Validate Mutant
 /**
@@ -12,12 +13,12 @@ const mutantController = require('./../controllers/mutant.controller');
  *      type: object
  *      properties:
  *        dna:
- *          type: string[]
+ *          type: array
  *          description: Recibe la cadena serializada de ADN, para evaluar el posible mutante
  *      required:
  *        - dna
  *      example:
- *        dna: [ 'ATGCGA','CAGTGC','TTATGT','AGAAGG','CCCCTA','TCACTG']
+ *        dna: ["ATGCGA","CAGTGC","TTATGT","AGAAGG","CCCCTA","TCACTG"]
  */
 /**
  * @swagger
@@ -39,10 +40,16 @@ const mutantController = require('./../controllers/mutant.controller');
  *        description: Forbidden
  */
 router.post("/mutant/", (req, res) => {
-  mutantController.validateDnaMutant(req.body).then(() => {
-    res.status(200).send("OK");
-  }).catch(() => {
-    res.status(403).send("Oh uh, something went wrong");
+  mutantController.validateDnaMutant(req.body.dna).then(async (isMutant) => {
+    
+    await mutantService.storeDnaValidation(isMutant).then(() => {
+      res.status(200).send("OK");
+    })
+    // .catch(() => {
+    //   res.status(403).send("Oh uh, something went wrong.");
+    // })
+  }).catch(error => {
+    res.status(403).send(error);
   })
 });
 
@@ -59,11 +66,23 @@ router.post("/mutant/", (req, res) => {
  *      403:
  *        description: Forbidden
  */
-router.get("/stats/", (req, res) => {
-//   userSchema
-//     .find()
-//     .then((data) => res.json(data))
-//     .catch((error) => res.json({ message: error }));
+router.get("/stats/", async (req, res) => {
+  await mutantService.getAllDnaValidations().then(response => {
+    
+    const total = response.length;
+    const mutants = response.filter(c => c.isMutant).length;
+    const result = {
+      count_mutant_dna: mutants, 
+      count_human_dna: total,
+      ratio: mutants/total
+    }
+   
+     res.status(200).send(result);
+  })
+  .catch((error) => {
+    console.log(error);
+    res.status(403).send(error);
+  })
 });
 
 module.exports = router;

@@ -6,13 +6,14 @@ const validateDnaMutant =  async (dna) => {
  }
 
  const validateDnaSecuence = async (dna) => { 
-   
+    
     const dnaSecuenceLenght = 6;
-    const splittedDna = dna.toString().split(",");
-    // 'DNA_INCORRECT_SECUENCE', 'La longitud de secuencia de ADN no es correcta.'
-    // 'DNA_INCORRECT_BASE', 'La secuencia dada no corresponde a la Base Nitrogenada: "A","T","C","G".'
+    const splittedDna = dna.toString().replace(' ', '').split(",");
+   
     splittedDna.forEach(secuence => {
+       
         if (secuence.length !== dnaSecuenceLenght && splittedDna.length !== dnaSecuenceLenght) {
+            console.log(dna,   secuence.length, splittedDna.length , dnaSecuenceLenght );
             throw 'DNA_INCORRECT_SECUENCE';
         }
         const pattern = /[^ATCG]/g;
