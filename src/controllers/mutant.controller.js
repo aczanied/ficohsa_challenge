@@ -26,7 +26,6 @@ const validateDnaMutant =  async (dna) => {
 
 const isMutant = async (dna = []) => {
 
-    console.log(dna);
     const patternA = /[A]{4}/g;
     const patternT = /[T]{4}/g;
     const patternC = /[C]{4}/g;
