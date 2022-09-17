@@ -1,7 +1,7 @@
 const express = require("express");
-// const userSchema = require("../models/user");
-
 const router = express.Router();
+
+const mutantController = require('./../controllers/mutant.controller');
 
 // Validate Mutant
 /**
@@ -39,7 +39,11 @@ const router = express.Router();
  *        description: Forbidden
  */
 router.post("/mutant/", (req, res) => {
-  res.status(403).send("Oh uh, something went wrong");
+  mutantController.validateDnaMutant(req.body).then(() => {
+    res.status(200).send("OK");
+  }).catch(() => {
+    res.status(403).send("Oh uh, something went wrong");
+  })
 });
 
 // get all DNA Validated
