@@ -43,11 +43,14 @@ router.post("/mutant/", (req, res) => {
   mutantController.validateDnaMutant(req.body.dna).then(async (isMutant) => {
     
     await mutantService.storeDnaValidation(isMutant).then(() => {
-      res.status(200).send("OK");
+      if (isMutant) {
+        res.status(200).send("OK");
+      }
+      else {
+        res.status(403).send("Forbidden");
+      }
+      
     })
-    // .catch(() => {
-    //   res.status(403).send("Oh uh, something went wrong.");
-    // })
   }).catch(error => {
     res.status(403).send(error);
   })
@@ -80,7 +83,6 @@ router.get("/stats/", async (req, res) => {
      res.status(200).send(result);
   })
   .catch((error) => {
-    console.log(error);
     res.status(403).send(error);
   })
 });

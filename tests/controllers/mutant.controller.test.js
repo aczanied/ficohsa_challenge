@@ -42,8 +42,9 @@ test('dnaShouldDetectDiagonalMutant', async () => {
 });
 
 test('dnaShouldNotBeMutant', async () => {
- 
-  return mutantController.validateDnaMutant(["ATGCGA", "CAGTGC", "TTATTT","AGACGG","GCGTCA", "TCACTG"]).then(res => {
+  
+  // ["ATGCGA", "CAGTGC", "TTATTT","AGACGG","GCGTCA", "TCACTG"]
+  return mutantController.validateDnaMutant(["ATGCGA","CAGTAC","TTATGT","CGAGGG","CCTCTA","TCACTG"]).then(res => {
    
     expect(res).toBe(false);
   })
