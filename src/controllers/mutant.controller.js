@@ -13,7 +13,6 @@ const validateDnaMutant =  async (dna) => {
     splittedDna.forEach(secuence => {
        
         if (secuence.length !== dnaSecuenceLenght && splittedDna.length !== dnaSecuenceLenght) {
-            console.log(dna,   secuence.length, splittedDna.length , dnaSecuenceLenght );
             throw 'DNA_INCORRECT_SECUENCE';
         }
         const pattern = /[^ATCG]/g;

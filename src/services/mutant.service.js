@@ -3,7 +3,6 @@ const mutantSchema = require("./../models/mutant.model");
 const storeDnaValidation =  async (isMutant) => { 
     
     const mutant = mutantSchema({ validationDate: Date.now() , isMutant: isMutant });
-    console.log('storeDnaValidation', mutant);
     await mutant.save(); 
 }
 
